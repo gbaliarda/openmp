@@ -1,6 +1,6 @@
 #!/bin/bash
 use_openmp=false
-if [$1 == '-fopenmp']; then
+if [ $1 == '-fopenmp' ]; then
     use_openmp=true
     gcc_flags="-fopenmp"
     output_suffix="_openmp"
@@ -14,7 +14,7 @@ if [ $? -eq 0 ]; then
     echo "Compilación exitosa. Ejecutando el programa..."
 
     echo "Hilos,Promedio Tiempo Inicialización (s),Error Inicialización (s),Promedio Tiempo Asignación (s),Error Asignación (s),Promedio Tiempo Suma (s),Error Suma (s)" > step_times.csv
-    for threads in {1..8}; do
+    for threads in {1..20}; do
         echo "Ejecutando con $threads hilos..."
 
         total_init=0

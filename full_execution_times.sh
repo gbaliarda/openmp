@@ -13,8 +13,8 @@ gcc -o actividad1_original.exe $gcc_flags actividad1_original.c
 if [ $? -eq 0 ]; then
     echo "Compilación exitosa. Ejecutando el programa..."
 
-    echo "Hilos,Promedio Tiempo Real (s),Error Real (s),Promedio Tiempo Usuario (s),Error Usuario (s),Promedio Tiempo Sistema (s),Error Sistema (s)" > full_execution_times.csv
-    for threads in {1..8}; do
+    echo "Hilos,Promedio Tiempo Real (s),Error Real (s),Promedio Tiempo Usuario (s),Error Usuario (s),Promedio Tiempo Sistema (s),Error Sistema (s)" > "full_execution_times${output_suffix}.csv"
+    for threads in {1..20}; do
         echo "Ejecutando con $threads hilos..."
 
         total_real=0
