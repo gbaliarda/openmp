@@ -1,11 +1,20 @@
 #!/bin/bash
-gcc -o actividad1_step_times.exe -fopenmp actividad1_step_times.c
+use_openmp=false
+if [$1 == '-fopenmp']; then
+    use_openmp=true
+    gcc_flags="-fopenmp"
+    output_suffix="_openmp"
+else
+    gcc_flags=""
+    output_suffix=""
+fi
+gcc -o actividad1_step_times.exe $gcc_flags actividad1_step_times.c
 
 if [ $? -eq 0 ]; then
     echo "Compilación exitosa. Ejecutando el programa..."
 
     echo "Hilos,Promedio Tiempo Inicialización (s),Error Inicialización (s),Promedio Tiempo Asignación (s),Error Asignación (s),Promedio Tiempo Suma (s),Error Suma (s)" > step_times.csv
-    for threads in {1..20}; do
+    for threads in {1..8}; do
         echo "Ejecutando con $threads hilos..."
 
         total_init=0
@@ -66,7 +75,7 @@ if [ $? -eq 0 ]; then
         std_dev_assign=$(echo "scale=5; sqrt($var_assign)" | bc)
         std_dev_sum=$(echo "scale=5; sqrt($var_sum)" | bc)
 
-        echo "$threads,$avg_init,$std_dev_init,$avg_assign,$std_dev_assign,$avg_sum,$std_dev_sum" >> step_times.csv
+        echo "$threads,$avg_init,$std_dev_init,$avg_assign,$std_dev_assign,$avg_sum,$std_dev_sum" >> "step_times${output_suffix}.csv"
     done
 else
     echo "Error en la compilación."

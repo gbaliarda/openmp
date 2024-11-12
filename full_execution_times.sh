@@ -1,11 +1,20 @@
 #!/bin/bash
-gcc -o actividad1_original.exe -fopenmp actividad1_original.c
+use_openmp=false
+if [ "$1" == '-fopenmp' ]; then
+    use_openmp=true
+    gcc_flags="-fopenmp"
+    output_suffix="_openmp"
+else
+    gcc_flags=""
+    output_suffix=""
+fi
+gcc -o actividad1_original.exe $gcc_flags actividad1_original.c
 
 if [ $? -eq 0 ]; then
     echo "Compilación exitosa. Ejecutando el programa..."
 
     echo "Hilos,Promedio Tiempo Real (s),Error Real (s),Promedio Tiempo Usuario (s),Error Usuario (s),Promedio Tiempo Sistema (s),Error Sistema (s)" > full_execution_times.csv
-    for threads in {1..20}; do
+    for threads in {1..8}; do
         echo "Ejecutando con $threads hilos..."
 
         total_real=0
@@ -19,9 +28,9 @@ if [ $? -eq 0 ]; then
             echo "Iteración $run..."
             output=$( { time OMP_NUM_THREADS=$threads ./actividad1_original.exe; } 2>&1 )
             
-            real=$(echo "$output" | grep real | awk '{print $2}' | sed 's/m/*60+/; s/s//; s/$/0/' | bc)
-            user=$(echo "$output" | grep user | awk '{print $2}' | sed 's/m/*60+/; s/s//; s/$/0/' | bc)
-            sys=$(echo "$output" | grep sys | awk '{print $2}' | sed 's/m/*60+/; s/s//; s/$/0/' | bc)
+            real=$(echo "$output" | grep real | awk '{print $2}' | sed 's/,/./; s/m/*60+/; s/s//; s/$/0/' | bc)
+            user=$(echo "$output" | grep user | awk '{print $2}' | sed 's/,/./; s/m/*60+/; s/s//; s/$/0/' | bc)
+            sys=$(echo "$output" | grep sys | awk '{print $2}' | sed 's/,/./; s/m/*60+/; s/s//; s/$/0/' | bc)
 
 
             echo "Tiempos extraídos: Real: $real, User: $user, Sys: $sys"
@@ -68,7 +77,7 @@ if [ $? -eq 0 ]; then
         std_dev_user=$(echo "scale=5; sqrt($var_user)" | bc)
         std_dev_sys=$(echo "scale=5; sqrt($var_sys)" | bc)
 
-        echo "$threads,$avg_real,$std_dev_real,$avg_user,$std_dev_user,$avg_sys,$std_dev_sys" >> full_execution_times.csv
+        echo "$threads,$avg_real,$std_dev_real,$avg_user,$std_dev_user,$avg_sys,$std_dev_sys" >> "full_execution_times${output_suffix}.csv"
     done
 else
     echo "Error en la compilación."
