@@ -6,3 +6,4 @@ Archivos:
 - omp_steps_times.sh: Archivo bash que compila y ejecuta actividad1_step_times con distinta cantidad de hilos.
 - suma_paralela.c: Código que realiza una suma paralela para analizar la utilidad de OpenMP (compilado con GCC).
 - suma_paralela_gpu.cu: Código que utiliza la GPU para realizar la suma paralela (compilado con NVCC).
+- plots.ipynb: Crea los graficos de los archivos. 
